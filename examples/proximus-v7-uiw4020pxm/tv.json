@@ -1,0 +1,6 @@
+{
+  "tv": "Proximus V7 Decoder (Technicolor UIW4020PXM, Broadcom BCM7271), IPTV box, Belgium",
+  "os": "Android TV 12",
+  "brand": "Proximus",
+  "notes": "Operator box used without a Proximus TV subscription: Proximus TV app (stock Home, be.px.stbtvclient) and its player off, Technicolor logging, Google voice, feedback and recommendations off; six Technicolor services are PERSISTENT and run even when disabled; updaters, remote, Broadcom, Dolby and Chromecast kept; Netflix is boot-whitelisted and can't be stopped; only en/nl/fr in firmware; 2 GB: [notes](proximus-v7-uiw4020pxm/README.md)"
+}

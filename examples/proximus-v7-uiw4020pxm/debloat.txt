@@ -1,0 +1,94 @@
+# Proximus V7 Decoder (Technicolor UIW4020PXM, codename uiw4020pxm, Broadcom BCM7271, 2 GB RAM), Android TV 12,
+# firmware PXM-SW-12.0.5 (build STT5.251221.001, security patch 2026-07-01), Belgium
+# Operator IPTV box used WITHOUT a Proximus TV subscription, on Ethernet. Lived with for about two weeks,
+# with many reboots. Some packages below were disabled by hand before this list was written, the rest over ADB.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/proximus-v7-uiw4020pxm/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/proximus-v7-uiw4020pxm/debloat.txt be.px.stbtvclient
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Stock launcher: be.px.stbtvclient (the Proximus TV app) declares HOME. With it disabled, the only other
+# HOME is com.android.tv.settings/.system.FallbackHome (priority -1000), so a third-party launcher takes Home.
+# A Proximus TV subscriber must keep the whole "Proximus TV service" group below.
+#
+# Language: Settings offers only English, Nederlands and Français. The firmware (framework-res, TvSettings)
+# ships only en/fr/nl resources. Other locales (e.g. pl-PL) can be set through
+# ActivityManager.updatePersistentConfiguration run as the shell user (app_process). Apps and the launcher
+# follow, while the system menus stay in English.
+#
+# PERSISTENT: com.technicolor.ota, .android.remotecontrolservice, .android.dtvinput, .android.cas.provider,
+# .android.user.provider and .onetouchplay are pkgFlags PERSISTENT. Android starts them at every boot even
+# when disabled, so disabling them frees nothing. They are listed commented out below.
+#
+# Netflix (com.netflix.ninja) starts at boot and is on the system deviceidle whitelist. com.technicolor.dm
+# sends it its ESN at boot, and com.broadcom.nrdphelper monitors it. RUN_ANY_IN_BACKGROUND=ignore and
+# force-stop do not keep it from starting. Its BootCompleteReceiver cannot be disabled from the shell
+# (SecurityException). Leave nrdphelper and technicolor.dm alone, since Netflix certification depends on them.
+#
+# Kept: Play Store and Play Services, Gboard, Bluetooth, System UI, TV Settings, Chromecast
+# (com.google.android.apps.mediashell), Dolby audio, all com.broadcom.* services, com.technicolor.dm,
+# hddtemperaturemonitor, pxmledcontroller, hardwareproperties, and the updaters (see the end of this list).
+
+# Proximus TV service (only without a Proximus TV subscription)
+be.px.stbtvclient                            # Proximus TV app, the stock Home (HOME declared)
+com.technicolor.tplayer                      # Technicolor TV player for the Proximus service
+com.technicolor.android.dtvprovider.service  # TV channel provider service for the Proximus service
+com.technicolor.pxmsystemservice             # Proximus system service; nothing broke without it
+com.technicolor.android.provider             # Technicolor content provider; nothing broke without it
+com.technicolor.oba                          # Technicolor service, purpose not confirmed; nothing broke without it
+
+# Technicolor / operator telemetry and logging
+com.technicolor.android.tchlogservice        # Technicolor log service
+com.technicolor.android.usblogservice        # log export to USB
+com.technicolor.android.BootupTraceQR        # boot trace
+com.omni.sci                                 # operator monitoring agent (pairs with OmniSciOTA, which is kept)
+com.google.android.feedback
+com.google.android.tv.bugreportsender
+
+# Google extras
+com.google.android.katniss                   # Google voice search and Assistant (voice off by choice)
+com.google.android.tvrecommendations         # recommendation rows
+com.google.android.backdrop                  # Ambient Mode screensaver
+com.google.android.partnersetup
+com.google.android.onetimeinitializer
+com.android.settings.intelligence            # Settings search and suggestions, ~13 MB
+
+# Android extras nobody uses on a TV box
+com.android.printspooler
+com.android.dynsystem                        # Dynamic System Updates (developer feature)
+com.android.hotspot2.osulogin                # Passpoint hotspot sign-in
+com.android.backupconfirm
+com.android.sharedstoragebackup
+com.android.wallpaperbackup
+com.android.providers.calendar
+com.android.providers.contacts
+com.android.dreams.basic                     # basic screensaver (screensaver off by choice)
+
+# Off by choice on this unit (comment them out if you need them)
+com.google.android.tts                       # Google text-to-speech, needed by TalkBack
+com.google.android.marvin.talkback           # TalkBack screen reader
+
+# Disabled on this unit, but NOT recommended. They're commented out so the tools skip them.
+# com.google.android.tungsten.setupwraith      # Google setup, declares HOME; only after setup, keep if unsure
+# com.technicolor.android.setupwizard          # Technicolor setup wizard
+# com.omni.simplesetup                         # operator setup
+# com.technicolor.bp3fieldprovision            # field provisioning
+# com.technicolor.globalkey                    # global remote keys; TIM's Technicolor list keeps it
+# com.technicolor.tv.remotepairing             # remote pairing; re-enable before pairing a new remote
+# com.google.android.tv.remote.service.rro     # overlay for the phone-remote service
+# com.android.tv.settings.gms.resoverlay       # TvSettings overlay
+# com.android.tv.settings.device.display.daydream  # screensaver settings page
+# com.technicolor.tv.settings.device.display   # Technicolor display settings page
+# com.tch.android.overlay                      # Technicolor overlay
+
+# Pointless to disable: PERSISTENT, they start at every boot anyway
+# com.technicolor.android.remotecontrolservice
+# com.technicolor.android.dtvinput
+# com.technicolor.android.cas.provider
+# com.technicolor.android.user.provider
+# com.technicolor.onetouchplay                 # HDMI-CEC one-touch play
+
+# Updaters: keep enabled so Proximus firmware updates arrive
+# com.technicolor.ota                          # PERSISTENT
+# com.technicolor.android.customota
+# com.technicolor.OmniSciOTA
